@@ -10,17 +10,36 @@ public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton mSwitch;
 
+    Flash mFlash;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mFlash = new Flash();
+
         mSwitch = findViewById(R.id.id_fab);
         mSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Flash", Snackbar.LENGTH_SHORT).show();
+                if(!mFlash.isSupport()) {
+                    Snackbar.make(view, R.string.not_support, Snackbar.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if(mFlash.isOn()) {
+                    mFlash.turnOff();
+                } else {
+                    mFlash.turnOn();
+                }
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mFlash.release();
     }
 }
