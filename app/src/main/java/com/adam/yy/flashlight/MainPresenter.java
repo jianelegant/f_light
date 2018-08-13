@@ -4,7 +4,6 @@ import android.arch.lifecycle.GenericLifecycleObserver;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleOwner;
 import android.os.Message;
-import android.support.design.widget.Snackbar;
 
 import java.lang.ref.WeakReference;
 
@@ -15,16 +14,40 @@ public class MainPresenter implements GenericLifecycleObserver{
     private static final int LEVEL_0 = 0; // aways
     private static final int LEVEL_1 = 1;
     private static final int LEVEL_2 = 2;
+    private static final int LEVEL_3 = 3;
+    private static final int LEVEL_4 = 4;
+    private static final int LEVEL_5 = 5;
+    private static final int LEVEL_6 = 6;
+    private static final int LEVEL_7 = 7;
+    private static final int LEVEL_8 = 8;
 
     private static final int LEVEL_0_DURATION = 0; // aways
     private static final int LEVEL_1_DURATION = 1000; // 1000 ms
-    private static final int LEVEL_2_DURATION = 500;
+    private static final int LEVEL_2_DURATION = 890;
+    private static final int LEVEL_3_DURATION = 780;
+    private static final int LEVEL_4_DURATION = 670;
+    private static final int LEVEL_5_DURATION = 560;
+    private static final int LEVEL_6_DURATION = 450;
+    private static final int LEVEL_7_DURATION = 340;
+    private static final int LEVEL_8_DURATION = 230;
+
+    public static final String[] LEVELS = new String[]{""+LEVEL_0,
+            ""+LEVEL_1,
+            ""+LEVEL_2,
+            ""+LEVEL_3,
+            ""+LEVEL_4,
+            ""+LEVEL_5,
+            ""+LEVEL_6,
+            ""+LEVEL_7,
+            ""+LEVEL_8};
 
     private int mDuration = LEVEL_0_DURATION;
 
     private Handler mHandler;
 
     private Flash mFlash = new Flash();
+
+    private boolean isBlinging = false;
 
     public MainPresenter() {
         mHandler = new Handler(this);
@@ -41,17 +64,38 @@ public class MainPresenter implements GenericLifecycleObserver{
             case LEVEL_2:
                 mDuration = LEVEL_2_DURATION;
                 break;
+            case LEVEL_3:
+                mDuration = LEVEL_3_DURATION;
+                break;
+            case LEVEL_4:
+                mDuration = LEVEL_4_DURATION;
+                break;
+            case LEVEL_5:
+                mDuration = LEVEL_5_DURATION;
+                break;
+            case LEVEL_6:
+                mDuration = LEVEL_6_DURATION;
+                break;
+            case LEVEL_7:
+                mDuration = LEVEL_7_DURATION;
+                break;
+            case LEVEL_8:
+                mDuration = LEVEL_8_DURATION;
+                break;
             default:
                 mDuration = LEVEL_0_DURATION;
                 break;
         }
-        startBling();
+        if(isBlinging) {
+            startBling();
+        }
     }
 
     private void startBling() {
         if(mHandler.hasMessages(HANDLER_MSG_BLING)) {
             mHandler.removeMessages(HANDLER_MSG_BLING);
         }
+        isBlinging = true;
         if(LEVEL_0_DURATION == mDuration) {
             switchOn();
             return;
@@ -79,11 +123,15 @@ public class MainPresenter implements GenericLifecycleObserver{
     }
 
     private void bling() {
+        if(LEVEL_0_DURATION == mDuration) {
+            switchOn();
+            return;
+        }
         mHandler.sendEmptyMessageDelayed(HANDLER_MSG_BLING, mDuration);
         switchOnOff();
     }
 
-    public void switchOnOff() {
+    private void switchOnOff() {
         if(null != mFlash) {
             if(mFlash.isOn()) {
                 mFlash.turnOff();
@@ -91,6 +139,23 @@ public class MainPresenter implements GenericLifecycleObserver{
                 mFlash.turnOn();
             }
         }
+    }
+
+    public void blingOnOff(boolean on) {
+        if(on) {
+            startBling();
+        } else {
+            stopBling();
+        }
+    }
+
+    private void stopBling() {
+        isBlinging = false;
+        switchOff();
+    }
+
+    public boolean isBlinging() {
+        return isBlinging;
     }
 
     @Override
@@ -112,7 +177,7 @@ public class MainPresenter implements GenericLifecycleObserver{
 
     private void onDestroy() {
         mDuration = LEVEL_0_DURATION;
-        switchOff();
+        stopBling();
         release();
     }
 

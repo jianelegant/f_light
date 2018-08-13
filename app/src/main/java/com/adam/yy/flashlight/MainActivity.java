@@ -5,11 +5,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.wx.wheelview.adapter.ArrayWheelAdapter;
+import com.wx.wheelview.widget.WheelView;
+
+import java.util.Arrays;
+
 public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton mSwitch;
 
     MainPresenter mMainPresenter = new MainPresenter();
+
+    WheelView<String> mWheelView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +24,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         getLifecycle().addObserver(mMainPresenter);
+
+        mWheelView = findViewById(R.id.id_wheel);
+        mWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
+        mWheelView.setSkin(WheelView.Skin.Common);
+        mWheelView.setWheelData(Arrays.asList(MainPresenter.LEVELS));
+        mWheelView.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener<String>() {
+            @Override
+            public void onItemSelected(int position, String s) {
+                setLevel(position);
+            }
+        });
 
         mSwitch = findViewById(R.id.id_fab);
         mSwitch.setOnClickListener(new View.OnClickListener() {
@@ -27,7 +45,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void setLevel(int level) {
+        mMainPresenter.setLevel(level);
+    }
+
     private void onFabBtn() {
-        mMainPresenter.switchOnOff();
+        if(mMainPresenter.isBlinging()) {
+            mMainPresenter.blingOnOff(false);
+            mSwitch.setImageResource(R.drawable.light_off);
+        } else {
+            mMainPresenter.blingOnOff(true);
+            mSwitch.setImageResource(R.drawable.light_on);
+        }
     }
 }
