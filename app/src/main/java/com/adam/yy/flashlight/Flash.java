@@ -23,6 +23,10 @@ public class Flash {
             mCamera = Camera.open();
         }
 
+        if(!isSupport()) {
+            Util.toast("Not support camera flash");
+            return;
+        }
         Camera.Parameters p = mCamera.getParameters();
         p.setFlashMode(getFlashOnParameter());
         try {
@@ -51,6 +55,9 @@ public class Flash {
     }
 
     public void turnOff() {
+        if(!isOn) {
+            return;
+        }
         if (null != mCamera) {
             Camera.Parameters params = mCamera.getParameters();
             params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
@@ -71,7 +78,7 @@ public class Flash {
         return isOn;
     }
 
-    public boolean isSupport() {
+    private boolean isSupport() {
         if (null == isSupport) {
             isSupport = new AtomicBoolean(false);
             PackageManager packageManager = MainApp.s_GlobalCtx.getPackageManager();
