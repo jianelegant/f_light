@@ -7,15 +7,19 @@
 
     <com.wx.wheelview.widget.WheelView
         android:id="@+id/id_wheel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="66dp"
+        android:layout_gravity="center_horizontal|bottom" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/id_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/light_off"
-        android:layout_margin="16dp"
+        android:layout_margin="36dp"
         android:layout_gravity="bottom|end"
-        app:backgroundTint="@color/fab"/>
+        app:backgroundTint="@color/fab"
+        app:layout_anchor="@id/id_wheel"
+        app:layout_anchorGravity="bottom|end"/>
 </android.support.design.widget.CoordinatorLayout>
