@@ -23,18 +23,24 @@ public class MainActivity extends AppCompatActivity {
         mSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!mFlash.isSupport()) {
-                    Snackbar.make(view, R.string.not_support, Snackbar.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if(mFlash.isOn()) {
-                    mFlash.turnOff();
-                } else {
-                    mFlash.turnOn();
-                }
+                onFabBtn(view);
             }
         });
+    }
+
+    private void onFabBtn(View view) {
+        if(!mFlash.isSupport()) {
+            Snackbar.make(view, R.string.not_support, Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(mFlash.isOn()) {
+            mFlash.turnOff();
+            mSwitch.setImageResource(R.drawable.light_off);
+        } else {
+            mFlash.turnOn();
+            mSwitch.setImageResource(R.drawable.light_on);
+        }
     }
 
     @Override
