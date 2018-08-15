@@ -50,6 +50,37 @@
                 android:layout_below="@id/id_auto_on"
                 android:background="@color/divider" />
         </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/id_auto_on_ly"
+            android:layout_marginTop="9dp"
+            android:padding="11dp">
+
+            <android.support.v7.widget.AppCompatSeekBar
+                android:id="@+id/id_bling_level"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:max="10"
+                android:thumb="@drawable/thumb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="@string/slow"
+                android:layout_below="@id/id_bling_level"
+                android:layout_alignLeft="@id/id_bling_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="@string/fast"
+                android:layout_below="@id/id_bling_level"
+                android:layout_alignRight="@id/id_bling_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
     </RelativeLayout>
 
     <com.wx.wheelview.widget.WheelView
