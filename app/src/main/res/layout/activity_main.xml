@@ -5,6 +5,17 @@
     android:background="@color/bg"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_gravity="center_horizontal"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        ads:adUnitId="ca-app-pub-8228643650463927/5490067777"/>
+
     <com.wx.wheelview.widget.WheelView
         android:id="@+id/id_wheel"
         android:layout_width="160dp"

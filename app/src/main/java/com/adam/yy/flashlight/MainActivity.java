@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.wx.wheelview.adapter.ArrayWheelAdapter;
 import com.wx.wheelview.widget.WheelView;
 
@@ -24,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         getLifecycle().addObserver(mMainPresenter);
+
+        loadAd();
 
         mWheelView = findViewById(R.id.id_wheel);
         mWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
@@ -57,5 +61,11 @@ public class MainActivity extends AppCompatActivity {
             mMainPresenter.blingOnOff(true);
             mSwitch.setImageResource(R.drawable.light_on);
         }
+    }
+
+    private void loadAd() {
+        AdView adView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 }
