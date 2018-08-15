@@ -20,6 +20,7 @@ public class MainPresenter implements GenericLifecycleObserver{
     private static final int LEVEL_6 = 6;
     private static final int LEVEL_7 = 7;
     private static final int LEVEL_8 = 8;
+    private static final int LEVEL_9 = 9;
 
     private static final int LEVEL_0_DURATION = 0; // aways
     private static final int LEVEL_1_DURATION = 1000; // 1000 ms
@@ -30,16 +31,7 @@ public class MainPresenter implements GenericLifecycleObserver{
     private static final int LEVEL_6_DURATION = 450;
     private static final int LEVEL_7_DURATION = 340;
     private static final int LEVEL_8_DURATION = 230;
-
-    public static final String[] LEVELS = new String[]{""+LEVEL_0,
-            ""+LEVEL_1,
-            ""+LEVEL_2,
-            ""+LEVEL_3,
-            ""+LEVEL_4,
-            ""+LEVEL_5,
-            ""+LEVEL_6,
-            ""+LEVEL_7,
-            ""+LEVEL_8};
+    private static final int LEVEL_9_DURATION = 120;
 
     private int mDuration = LEVEL_0_DURATION;
 
@@ -81,6 +73,9 @@ public class MainPresenter implements GenericLifecycleObserver{
                 break;
             case LEVEL_8:
                 mDuration = LEVEL_8_DURATION;
+                break;
+            case LEVEL_9:
+                mDuration = LEVEL_9_DURATION;
                 break;
             default:
                 mDuration = LEVEL_0_DURATION;

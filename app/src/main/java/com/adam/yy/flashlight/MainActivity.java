@@ -3,16 +3,15 @@ package com.adam.yy.flashlight;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.SeekBar;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.wx.wheelview.adapter.ArrayWheelAdapter;
-import com.wx.wheelview.widget.WheelView;
-
-import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     MainPresenter mMainPresenter = new MainPresenter();
 
-    WheelView<String> mWheelView;
+    AppCompatSeekBar mLevel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +31,21 @@ public class MainActivity extends AppCompatActivity {
 
         loadAd();
 
-        mWheelView = findViewById(R.id.id_wheel);
-        mWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
-        mWheelView.setSkin(WheelView.Skin.Common);
-        mWheelView.setWheelData(Arrays.asList(MainPresenter.LEVELS));
-        mWheelView.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener<String>() {
+        mLevel = findViewById(R.id.id_bling_level);
+        mLevel.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onItemSelected(int position, String s) {
-                setLevel(position);
+            public void onProgressChanged(SeekBar seekBar, int level, boolean fromUser) {
+                setLevel(level);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
 
