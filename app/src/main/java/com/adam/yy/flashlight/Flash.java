@@ -28,14 +28,19 @@ public class Flash {
             return;
         }
         Camera.Parameters p = mCamera.getParameters();
-        p.setFlashMode(getFlashOnParameter());
+        String mode = getFlashOnParameter();
+        p.setFlashMode(mode);
         try {
             mCamera.setPreviewTexture(new SurfaceTexture(0));
             mCamera.setParameters(p);
             mCamera.startPreview();
-            mCamera.autoFocus(null);
+            if(FLASH_MODE_AUTO.equals(mode)) {
+                mCamera.autoFocus(null);
+            }
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
         }
         isOn = true;
     }

@@ -82,7 +82,12 @@ public class MainPresenter implements GenericLifecycleObserver{
                 break;
         }
         if(isBlinging) {
-            startBling();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    startBling();
+                }
+            }).start();
         }
     }
 
