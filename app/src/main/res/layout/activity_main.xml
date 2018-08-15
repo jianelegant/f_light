@@ -1,36 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/bg">
 
-    <com.google.android.gms.ads.AdView
-        xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/adView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_gravity="center_horizontal"
-        ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-3940256099942544/6300978111"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="4dp"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-3940256099942544/6300978111" />
         ads:adUnitId="ca-app-pub-8228643650463927/5490067777"/>
+
+        <RelativeLayout
+            android:id="@+id/id_auto_on_ly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/adView"
+            android:layout_marginTop="40dp"
+            android:padding="11dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_margin="9dp"
+                android:gravity="center"
+                android:text="@string/auto_on_tips" />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/id_auto_on"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="9dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2px"
+                android:layout_below="@id/id_auto_on"
+                android:background="@color/divider" />
+        </RelativeLayout>
+    </RelativeLayout>
 
     <com.wx.wheelview.widget.WheelView
         android:id="@+id/id_wheel"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="66dp"
-        android:layout_gravity="center_horizontal|bottom" />
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="66dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/id_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/light_off"
-        android:layout_margin="36dp"
         android:layout_gravity="bottom|end"
+        android:layout_margin="36dp"
+        android:src="@drawable/light_off"
         app:backgroundTint="@color/fab"
         app:layout_anchor="@id/id_wheel"
-        app:layout_anchorGravity="bottom|end"/>
+        app:layout_anchorGravity="bottom|end" />
 </android.support.design.widget.CoordinatorLayout>

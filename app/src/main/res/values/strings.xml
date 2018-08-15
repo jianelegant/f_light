@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">FlashLight</string>
     <string name="not_support">Your phone not support flash.</string>
+    <string name="auto_on">Automatic on</string>
+    <string name="auto_on_tips">Turn on flashlight on startup</string>
 </resources>
