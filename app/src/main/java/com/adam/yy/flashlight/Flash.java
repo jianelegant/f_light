@@ -1,6 +1,5 @@
 package com.adam.yy.flashlight;
 
-import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 
@@ -86,9 +85,19 @@ public class Flash {
     private boolean isSupport() {
         if (null == isSupport) {
             isSupport = new AtomicBoolean(false);
-            PackageManager packageManager = MainApp.s_GlobalCtx.getPackageManager();
-            if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-                isSupport.set(true);
+            if(null == mCamera) {
+                mCamera = Camera.open();
+            }
+            if(null != mCamera){
+                Camera.Parameters parameters = mCamera.getParameters();
+                if(null != parameters.getFlashMode()){
+                    List<String> supportedFlashModes = parameters.getSupportedFlashModes();
+                    if (null == supportedFlashModes || supportedFlashModes.isEmpty() || supportedFlashModes.size() == 1 && supportedFlashModes.get(0).equals(Camera.Parameters.FLASH_MODE_OFF)) {
+                        isSupport.set(false);
+                    } else {
+                        isSupport.set(true);
+                    }
+                }
             }
         }
         return isSupport.get();
