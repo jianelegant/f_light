@@ -104,10 +104,14 @@ public class MainPresenter implements GenericLifecycleObserver{
     }
 
     private void switchOn() {
-        if(null != mFlash) {
-            if(!mFlash.isOn()) {
-                mFlash.turnOn();
+        if(canFlash()) {
+            if (null != mFlash) {
+                if (!mFlash.isOn()) {
+                    mFlash.turnOn();
+                }
             }
+        } else {
+            // TODO
         }
     }
 
@@ -115,10 +119,14 @@ public class MainPresenter implements GenericLifecycleObserver{
         if(mHandler.hasMessages(HANDLER_MSG_BLING)) {
             mHandler.removeMessages(HANDLER_MSG_BLING);
         }
-        if(null != mFlash) {
-            if(mFlash.isOn()) {
-                mFlash.turnOff();
+        if(canFlash()) {
+            if (null != mFlash) {
+                if (mFlash.isOn()) {
+                    mFlash.turnOff();
+                }
             }
+        } else {
+            // TODO
         }
     }
 
@@ -132,12 +140,16 @@ public class MainPresenter implements GenericLifecycleObserver{
     }
 
     private void switchOnOff() {
-        if(null != mFlash) {
-            if(mFlash.isOn()) {
-                mFlash.turnOff();
-            } else {
-                mFlash.turnOn();
+        if(canFlash()) {
+            if (null != mFlash) {
+                if (mFlash.isOn()) {
+                    mFlash.turnOff();
+                } else {
+                    mFlash.turnOn();
+                }
             }
+        } else {
+            // TODO
         }
     }
 
@@ -173,6 +185,10 @@ public class MainPresenter implements GenericLifecycleObserver{
         if(null != mFlash) {
             mFlash.release();
         }
+    }
+
+    private boolean canFlash() {
+        return mFlash.isSupport() && PerUtil.hasCameraPermission();
     }
 
     private void onDestroy() {

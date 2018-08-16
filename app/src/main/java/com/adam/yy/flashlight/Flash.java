@@ -23,7 +23,6 @@ public class Flash {
         }
 
         if(!isSupport()) {
-            Util.toast("Not support camera flash");
             return;
         }
         Camera.Parameters p = mCamera.getParameters();
@@ -82,7 +81,7 @@ public class Flash {
         return isOn;
     }
 
-    private boolean isSupport() {
+    public boolean isSupport() {
         if (null == isSupport) {
             isSupport = new AtomicBoolean(false);
             if(null == mCamera) {
