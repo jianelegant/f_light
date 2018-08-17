@@ -17,7 +17,7 @@
             android:layout_marginTop="4dp"
             ads:adSize="BANNER"
             ads:adUnitId="ca-app-pub-3940256099942544/6300978111" />
-        ads:adUnitId="ca-app-pub-8228643650463927/5490067777"/>
+            ads:adUnitId="ca-app-pub-8228643650463927/5490067777"/>
 
         <RelativeLayout
             android:id="@+id/id_auto_on_ly"
@@ -92,4 +92,11 @@
         android:layout_marginBottom="96dp"
         android:src="@drawable/light_off"
         app:backgroundTint="@color/fab" />
+
+    <View
+        android:id="@+id/id_full_white"
+        android:visibility="gone"
+        android:background="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </android.support.design.widget.CoordinatorLayout>

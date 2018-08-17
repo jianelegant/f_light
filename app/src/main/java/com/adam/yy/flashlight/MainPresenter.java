@@ -7,7 +7,7 @@ import android.os.Message;
 
 import java.lang.ref.WeakReference;
 
-public class MainPresenter implements GenericLifecycleObserver{
+public class MainPresenter implements GenericLifecycleObserver, IMainContract.IPresenter{
 
     private static final int HANDLER_MSG_BLING = 0;
 
@@ -39,12 +39,16 @@ public class MainPresenter implements GenericLifecycleObserver{
 
     private Flash mFlash = new Flash();
 
+    IMainContract.IView mView;
+
     private boolean isBlinging = false;
 
-    public MainPresenter() {
+    public MainPresenter(IMainContract.IView iView) {
         mHandler = new Handler(this);
+        mView = iView;
     }
 
+    @Override
     public void setLevel(int level) {
         switch (level) {
             case LEVEL_0:
@@ -82,12 +86,16 @@ public class MainPresenter implements GenericLifecycleObserver{
                 break;
         }
         if(isBlinging) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    startBling();
-                }
-            }).start();
+            if(canFlash()) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        startBling();
+                    }
+                }).start();
+            } else {
+                startBling();
+            }
         }
     }
 
@@ -111,7 +119,7 @@ public class MainPresenter implements GenericLifecycleObserver{
                 }
             }
         } else {
-            // TODO
+            mView.onWhiteScreenOn();
         }
     }
 
@@ -126,7 +134,7 @@ public class MainPresenter implements GenericLifecycleObserver{
                 }
             }
         } else {
-            // TODO
+            mView.onWhiteScreenOff();
         }
     }
 
@@ -149,10 +157,15 @@ public class MainPresenter implements GenericLifecycleObserver{
                 }
             }
         } else {
-            // TODO
+            if(mView.isOn()) {
+                mView.onWhiteScreenOff();
+            } else {
+                mView.onWhiteScreenOn();
+            }
         }
     }
 
+    @Override
     public void blingOnOff(boolean on) {
         if(on) {
             startBling();
@@ -164,8 +177,10 @@ public class MainPresenter implements GenericLifecycleObserver{
     private void stopBling() {
         isBlinging = false;
         switchOff();
+        mView.onStopBling();
     }
 
+    @Override
     public boolean isBlinging() {
         return isBlinging;
     }

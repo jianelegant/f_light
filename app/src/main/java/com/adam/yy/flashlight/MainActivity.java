@@ -6,24 +6,30 @@ import android.os.Bundle;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IMainContract.IView{
 
     FloatingActionButton mSwitch;
     SwitchCompat mAutoOn;
 
-    MainPresenter mMainPresenter = new MainPresenter();
+    MainPresenter mMainPresenter = new MainPresenter(this);
 
     AppCompatSeekBar mLevel;
+
+    View mFullWhite;
+    boolean mIsOn = false;
+    float mOldBrightness;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
 
         getLifecycle().addObserver(mMainPresenter);
@@ -55,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
                 onFabBtn();
             }
         });
+
+        mFullWhite = findViewById(R.id.id_full_white);
 
         initAutoOn();
     }
@@ -89,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
             mMainPresenter.blingOnOff(false);
             mSwitch.setImageResource(R.drawable.light_off);
         } else {
+            onStartBling();
             mMainPresenter.blingOnOff(true);
             mSwitch.setImageResource(R.drawable.light_on);
         }
@@ -98,5 +107,44 @@ public class MainActivity extends AppCompatActivity {
         AdView adView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
+    }
+
+    @Override
+    public void onWhiteScreenOn() {
+        mIsOn = true;
+        mFullWhite.setVisibility(View.VISIBLE);
+        mFullWhite.setBackgroundColor(getResources().getColor(android.R.color.white));
+        WindowManager.LayoutParams layout = getWindow().getAttributes();
+        layout.screenBrightness = 1F;
+        getWindow().setAttributes(layout);
+    }
+
+    @Override
+    public void onWhiteScreenOff() {
+        mIsOn = false;
+        mFullWhite.setVisibility(View.VISIBLE);
+        mFullWhite.setBackgroundColor(getResources().getColor(android.R.color.black));
+        WindowManager.LayoutParams layout = getWindow().getAttributes();
+        layout.screenBrightness = 0F;
+        getWindow().setAttributes(layout);
+    }
+
+    @Override
+    public void onStartBling() {
+        mOldBrightness = getWindow().getAttributes().screenBrightness;
+    }
+
+    @Override
+    public void onStopBling() {
+        mIsOn = false;
+        mFullWhite.setVisibility(View.GONE);
+        WindowManager.LayoutParams layout = getWindow().getAttributes();
+        layout.screenBrightness = mOldBrightness;
+        getWindow().setAttributes(layout);
+    }
+
+    @Override
+    public boolean isOn() {
+        return mIsOn;
     }
 }
