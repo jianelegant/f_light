@@ -65,8 +65,8 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
 
         mFullWhite = findViewById(R.id.id_full_white);
 
-        initAutoOn();
         initUseScreen();
+        initAutoOn();
     }
 
     private void initUseScreen() {
@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
             public void onCheckedChanged(CompoundButton compoundButton, boolean use) {
                 if(!use && !mMainPresenter.canFlash()) {
                     Util.toast("Can only use screen, not support camera flash");
+                    mUseScreen.setChecked(true);
                     return;
                 }
                 Util.setUseScreen(use);
