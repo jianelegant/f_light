@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
+        mOldBrightness = getWindow().getAttributes().screenBrightness;
 
         getLifecycle().addObserver(mMainPresenter);
 
@@ -88,7 +89,13 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
                     mUseScreen.setChecked(true);
                     return;
                 }
-                Util.setUseScreen(use);
+                if(mMainPresenter.isBlinging()) {
+                    blingOff();
+                    Util.setUseScreen(use);
+                    blingOn();
+                } else {
+                    Util.setUseScreen(use);
+                }
             }
         });
     }
@@ -110,9 +117,13 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
     }
 
     private void blingOn() {
-        onStartBling();
         mMainPresenter.blingOnOff(true);
         mSwitch.setImageResource(R.drawable.light_on);
+    }
+
+    private void blingOff() {
+        mMainPresenter.blingOnOff(false);
+        mSwitch.setImageResource(R.drawable.light_off);
     }
 
     private void setLevel(int level) {
@@ -121,12 +132,9 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
 
     private void onFabBtn() {
         if(mMainPresenter.isBlinging()) {
-            mMainPresenter.blingOnOff(false);
-            mSwitch.setImageResource(R.drawable.light_off);
+            blingOff();
         } else {
-            onStartBling();
-            mMainPresenter.blingOnOff(true);
-            mSwitch.setImageResource(R.drawable.light_on);
+            blingOn();
         }
     }
 
@@ -154,13 +162,6 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
         WindowManager.LayoutParams layout = getWindow().getAttributes();
         layout.screenBrightness = 0F;
         getWindow().setAttributes(layout);
-    }
-
-    @Override
-    public void onStartBling() {
-        if(Util.getUseScreen()) {
-            mOldBrightness = getWindow().getAttributes().screenBrightness;
-        }
     }
 
     @Override

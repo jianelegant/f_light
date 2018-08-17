@@ -11,7 +11,6 @@ public interface IMainContract {
     interface IView {
         void onWhiteScreenOn();
         void onWhiteScreenOff();
-        void onStartBling();
         void onStopBling();
         boolean isOn();
     }
