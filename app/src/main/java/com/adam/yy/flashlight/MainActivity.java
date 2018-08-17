@@ -10,8 +10,10 @@ import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 
 public class MainActivity extends AppCompatActivity implements IMainContract.IView{
 
@@ -26,6 +28,9 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
     View mFullWhite;
     boolean mIsOn = false;
     float mOldBrightness;
+
+    private InterstitialAd mInterstitialAd;
+    int failRetryTimes = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,8 +138,15 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
     private void onFabBtn() {
         if(mMainPresenter.isBlinging()) {
             blingOff();
+            showInterstitialAd();
         } else {
             blingOn();
+        }
+    }
+
+    private void showInterstitialAd() {
+        if(null != mInterstitialAd && mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
         }
     }
 
@@ -142,6 +154,22 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
         AdView adView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
+
+        failRetryTimes = 0;
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_ad_id));
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new AdListener(){
+            @Override
+            public void onAdFailedToLoad(int i) {
+                if(!MainActivity.this.isFinishing() && failRetryTimes < 3) {
+                    if(null != mInterstitialAd) {
+                        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                        failRetryTimes++;
+                    }
+                }
+            }
+        });
     }
 
     @Override
