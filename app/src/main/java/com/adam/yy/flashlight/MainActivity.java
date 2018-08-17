@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
     }
 
     private void blingOn() {
+        onStartBling();
         mMainPresenter.blingOnOff(true);
         mSwitch.setImageResource(R.drawable.light_on);
     }
