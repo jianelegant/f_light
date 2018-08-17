@@ -22,4 +22,14 @@ public class Util {
         editor.putBoolean(Const.SP_KEY_AUTO_ON, autoOn);
         editor.apply();
     }
+
+    public static boolean getUseScreen() {
+        return PreferenceManager.getDefaultSharedPreferences(MainApp.s_GlobalCtx).getBoolean(Const.SP_KEY_USE_SCREEN, false);
+    }
+
+    public static void setUseScreen(boolean useScreen) {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainApp.s_GlobalCtx).edit();
+        editor.putBoolean(Const.SP_KEY_USE_SCREEN, useScreen);
+        editor.apply();
+    }
 }

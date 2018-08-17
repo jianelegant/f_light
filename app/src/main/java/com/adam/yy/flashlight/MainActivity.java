@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
 
     FloatingActionButton mSwitch;
     SwitchCompat mAutoOn;
+    SwitchCompat mUseScreen;
 
     MainPresenter mMainPresenter = new MainPresenter(this);
 
@@ -65,6 +66,30 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
         mFullWhite = findViewById(R.id.id_full_white);
 
         initAutoOn();
+        initUseScreen();
+    }
+
+    private void initUseScreen() {
+        mUseScreen = findViewById(R.id.id_use_screen);
+        if(!mMainPresenter.canFlash()) {
+            Util.setUseScreen(true);
+        }
+        if(Util.getUseScreen()) {
+            mUseScreen.setChecked(true);
+        } else {
+            mUseScreen.setChecked(false);
+        }
+
+        mUseScreen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean use) {
+                if(!use && !mMainPresenter.canFlash()) {
+                    Util.toast("Can only use screen, not support camera flash");
+                    return;
+                }
+                Util.setUseScreen(use);
+            }
+        });
     }
 
     private void initAutoOn() {
@@ -131,16 +156,20 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
 
     @Override
     public void onStartBling() {
-        mOldBrightness = getWindow().getAttributes().screenBrightness;
+        if(Util.getUseScreen()) {
+            mOldBrightness = getWindow().getAttributes().screenBrightness;
+        }
     }
 
     @Override
     public void onStopBling() {
         mIsOn = false;
         mFullWhite.setVisibility(View.GONE);
-        WindowManager.LayoutParams layout = getWindow().getAttributes();
-        layout.screenBrightness = mOldBrightness;
-        getWindow().setAttributes(layout);
+        if(Util.getUseScreen()) {
+            WindowManager.LayoutParams layout = getWindow().getAttributes();
+            layout.screenBrightness = mOldBrightness;
+            getWindow().setAttributes(layout);
+        }
     }
 
     @Override
