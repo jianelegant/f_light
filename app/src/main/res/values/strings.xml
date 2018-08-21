@@ -7,5 +7,5 @@
     <string name="auto_on_tips">Turn on when startup</string>
     <string name="slow">Slow</string>
     <string name="fast">Fast</string>
-    <string name="use_screen_led">Use screen LED</string>
+    <string name="use_camera_flash">Use camera flash</string>
 </resources>

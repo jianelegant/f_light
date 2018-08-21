@@ -70,10 +70,10 @@
                 android:layout_margin="9dp"
                 android:typeface="monospace"
                 android:gravity="center"
-                android:text="@string/use_screen_led" />
+                android:text="@string/use_camera_flash" />
 
             <android.support.v7.widget.SwitchCompat
-                android:id="@+id/id_use_screen"
+                android:id="@+id/id_use_flash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -83,7 +83,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2px"
-                android:layout_below="@id/id_use_screen"
+                android:layout_below="@id/id_use_flash"
                 android:background="@color/divider" />
         </RelativeLayout>
 

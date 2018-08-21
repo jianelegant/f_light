@@ -86,7 +86,7 @@ public class MainPresenter implements GenericLifecycleObserver, IMainContract.IP
                 break;
         }
         if(isBlinging) {
-            if(!Util.getUseScreen()) {
+            if(Util.getUseFlash()) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -112,7 +112,7 @@ public class MainPresenter implements GenericLifecycleObserver, IMainContract.IP
     }
 
     private void switchOn() {
-        if(!Util.getUseScreen()) {
+        if(Util.getUseFlash()) {
             if (null != mFlash) {
                 if (!mFlash.isOn()) {
                     mFlash.turnOn();
@@ -127,7 +127,7 @@ public class MainPresenter implements GenericLifecycleObserver, IMainContract.IP
         if(mHandler.hasMessages(HANDLER_MSG_BLING)) {
             mHandler.removeMessages(HANDLER_MSG_BLING);
         }
-        if(!Util.getUseScreen()) {
+        if(Util.getUseFlash()) {
             if (null != mFlash) {
                 if (mFlash.isOn()) {
                     mFlash.turnOff();
@@ -148,7 +148,7 @@ public class MainPresenter implements GenericLifecycleObserver, IMainContract.IP
     }
 
     private void switchOnOff() {
-        if(!Util.getUseScreen()) {
+        if(Util.getUseFlash()) {
             if (null != mFlash) {
                 if (mFlash.isOn()) {
                     mFlash.turnOff();

@@ -23,13 +23,13 @@ public class Util {
         editor.apply();
     }
 
-    public static boolean getUseScreen() {
-        return PreferenceManager.getDefaultSharedPreferences(MainApp.s_GlobalCtx).getBoolean(Const.SP_KEY_USE_SCREEN, false);
+    public static boolean getUseFlash() {
+        return PreferenceManager.getDefaultSharedPreferences(MainApp.s_GlobalCtx).getBoolean(Const.SP_KEY_USE_CAMERA_FLASH, true);
     }
 
-    public static void setUseScreen(boolean useScreen) {
+    public static void setUseFlash(boolean useFlash) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainApp.s_GlobalCtx).edit();
-        editor.putBoolean(Const.SP_KEY_USE_SCREEN, useScreen);
+        editor.putBoolean(Const.SP_KEY_USE_CAMERA_FLASH, useFlash);
         editor.apply();
     }
 }

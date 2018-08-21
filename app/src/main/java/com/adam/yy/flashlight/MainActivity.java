@@ -1,13 +1,12 @@
 package com.adam.yy.flashlight;
 
-import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
@@ -24,12 +23,12 @@ import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity implements IMainContract.IView{
 
-    private static final int HANDLER_MSG_CHECK_USE_SCREEN_STATUS = 1;
+    private static final int HANDLER_MSG_CHECK_USE_FLASH_STATUS = 1;
     private static final int REQUEST_CODE = 1988;
 
     FloatingActionButton mSwitch;
     SwitchCompat mAutoOn;
-    SwitchCompat mUseScreen;
+    SwitchCompat mUseFlash;
     Handler mHandler;
 
     MainPresenter mMainPresenter = new MainPresenter(this);
@@ -83,27 +82,27 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
         mFullWhite = findViewById(R.id.id_full_white);
 
         mHandler = new Handler(this);
-        initUseScreen();
+        initUseFlash();
     }
 
-    private void initUseScreen() {
-        mUseScreen = findViewById(R.id.id_use_screen);
+    private void initUseFlash() {
+        mUseFlash = findViewById(R.id.id_use_flash);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 if(!mMainPresenter.canFlash()) {
-                    Util.setUseScreen(true);
+                    Util.setUseFlash(false);
                 }
-                mHandler.sendEmptyMessage(HANDLER_MSG_CHECK_USE_SCREEN_STATUS);
+                mHandler.sendEmptyMessage(HANDLER_MSG_CHECK_USE_FLASH_STATUS);
 
             }
         }).start();
 
-        mUseScreen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mUseFlash.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean use) {
-                if(!use && mMainPresenter.isNoPermission()) {
-                    mUseScreen.setChecked(true);
+                if(use && mMainPresenter.isNoPermission()) {
+                    mUseFlash.setChecked(false);
                     requestCameraPremission();
                     return;
                 }
@@ -114,28 +113,28 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
 
     private void onUseScreenCheckChange(boolean use) {
         if(!use && !mMainPresenter.canFlash()) {
-            Util.toast("Can only use screen, not support camera flash");
-            mUseScreen.setChecked(true);
+            Util.toast("Can not use Camera flash, not support");
+            mUseFlash.setChecked(false);
             return;
         }
         if(mMainPresenter.isBlinging()) {
             blingOff();
-            Util.setUseScreen(use);
+            Util.setUseFlash(use);
             blingOn();
         } else {
-            Util.setUseScreen(use);
+            Util.setUseFlash(use);
         }
     }
 
     private void onPermissionGranted() {
         if(!mMainPresenter.canFlash()) {
             Util.toast("Can only use screen, not support camera flash");
-            mUseScreen.setChecked(true);
+            mUseFlash.setChecked(false);
             return;
         }
         blingOff();
-        Util.setUseScreen(false);
-        mUseScreen.setChecked(false);
+        Util.setUseFlash(true);
+        mUseFlash.setChecked(true);
         blingOn();
     }
 
@@ -252,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
     public void onStopBling() {
         mIsOn = false;
         mFullWhite.setVisibility(View.GONE);
-        if(Util.getUseScreen()) {
+        if(!Util.getUseFlash()) {
             WindowManager.LayoutParams layout = getWindow().getAttributes();
             layout.screenBrightness = mOldBrightness;
             getWindow().setAttributes(layout);
@@ -260,11 +259,11 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
     }
 
     @MainThread
-    private void checkUseScreenStatus() {
-        if(Util.getUseScreen()) {
-            mUseScreen.setChecked(true);
+    private void checkUseFlashStatus() {
+        if(Util.getUseFlash()) {
+            mUseFlash.setChecked(true);
         } else {
-            mUseScreen.setChecked(false);
+            mUseFlash.setChecked(false);
         }
         initAutoOn();
     }
@@ -285,9 +284,9 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case HANDLER_MSG_CHECK_USE_SCREEN_STATUS:
+                case HANDLER_MSG_CHECK_USE_FLASH_STATUS:
                     if(null != weakActivity.get()) {
-                        weakActivity.get().checkUseScreenStatus();
+                        weakActivity.get().checkUseFlashStatus();
                     }
                     break;
                 default:
