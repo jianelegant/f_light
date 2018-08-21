@@ -203,7 +203,11 @@ public class MainPresenter implements GenericLifecycleObserver, IMainContract.IP
     }
 
     public boolean canFlash() {
-        return mFlash.isSupport() && PerUtil.hasCameraPermission();
+        return PerUtil.hasCameraPermission() && mFlash.isSupport();
+    }
+
+    public boolean isNoPermission() {
+        return !PerUtil.hasCameraPermission();
     }
 
     private void onDestroy() {

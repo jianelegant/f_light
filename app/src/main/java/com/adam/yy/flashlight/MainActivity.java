@@ -1,7 +1,10 @@
 package com.adam.yy.flashlight;
 
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Message;
+import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +25,7 @@ import java.lang.ref.WeakReference;
 public class MainActivity extends AppCompatActivity implements IMainContract.IView{
 
     private static final int HANDLER_MSG_CHECK_USE_SCREEN_STATUS = 1;
+    private static final int REQUEST_CODE = 1988;
 
     FloatingActionButton mSwitch;
     SwitchCompat mAutoOn;
@@ -98,20 +102,45 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
         mUseScreen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean use) {
-                if(!use && !mMainPresenter.canFlash()) {
-                    Util.toast("Can only use screen, not support camera flash");
+                if(!use && mMainPresenter.isNoPermission()) {
                     mUseScreen.setChecked(true);
+                    requestCameraPremission();
                     return;
                 }
-                if(mMainPresenter.isBlinging()) {
-                    blingOff();
-                    Util.setUseScreen(use);
-                    blingOn();
-                } else {
-                    Util.setUseScreen(use);
-                }
+                onUseScreenCheckChange(use);
             }
         });
+    }
+
+    private void onUseScreenCheckChange(boolean use) {
+        if(!use && !mMainPresenter.canFlash()) {
+            Util.toast("Can only use screen, not support camera flash");
+            mUseScreen.setChecked(true);
+            return;
+        }
+        if(mMainPresenter.isBlinging()) {
+            blingOff();
+            Util.setUseScreen(use);
+            blingOn();
+        } else {
+            Util.setUseScreen(use);
+        }
+    }
+
+    private void onPermissionGranted() {
+        if(!mMainPresenter.canFlash()) {
+            Util.toast("Can only use screen, not support camera flash");
+            mUseScreen.setChecked(true);
+            return;
+        }
+        blingOff();
+        Util.setUseScreen(false);
+        mUseScreen.setChecked(false);
+        blingOn();
+    }
+
+    private void requestCameraPremission() {
+        PerUtil.requestCameraPremission(this, REQUEST_CODE);
     }
 
     private void initAutoOn() {
@@ -187,26 +216,39 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
     }
 
     @Override
+    @MainThread
     public void onWhiteScreenOn() {
-        mIsOn = true;
-        mFullWhite.setVisibility(View.VISIBLE);
-        mFullWhite.setBackgroundColor(getResources().getColor(android.R.color.white));
-        WindowManager.LayoutParams layout = getWindow().getAttributes();
-        layout.screenBrightness = 1F;
-        getWindow().setAttributes(layout);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mIsOn = true;
+                mFullWhite.setVisibility(View.VISIBLE);
+                mFullWhite.setBackgroundColor(getResources().getColor(android.R.color.white));
+                WindowManager.LayoutParams layout = getWindow().getAttributes();
+                layout.screenBrightness = 1F;
+                getWindow().setAttributes(layout);
+            }
+        });
     }
 
     @Override
+    @MainThread
     public void onWhiteScreenOff() {
-        mIsOn = false;
-        mFullWhite.setVisibility(View.VISIBLE);
-        mFullWhite.setBackgroundColor(getResources().getColor(android.R.color.black));
-        WindowManager.LayoutParams layout = getWindow().getAttributes();
-        layout.screenBrightness = 0F;
-        getWindow().setAttributes(layout);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mIsOn = false;
+                mFullWhite.setVisibility(View.VISIBLE);
+                mFullWhite.setBackgroundColor(getResources().getColor(android.R.color.black));
+                WindowManager.LayoutParams layout = getWindow().getAttributes();
+                layout.screenBrightness = 0F;
+                getWindow().setAttributes(layout);
+            }
+        });
     }
 
     @Override
+    @MainThread
     public void onStopBling() {
         mIsOn = false;
         mFullWhite.setVisibility(View.GONE);
@@ -217,6 +259,7 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
         }
     }
 
+    @MainThread
     private void checkUseScreenStatus() {
         if(Util.getUseScreen()) {
             mUseScreen.setChecked(true);
@@ -252,5 +295,19 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
             }
         }
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(REQUEST_CODE == requestCode) {
+            if(permissions.length > 0) {
+                if(PerUtil.CAMERA_PERMISSION.equals(permissions[0]) && PackageManager.PERMISSION_GRANTED == grantResults[0]) {
+                    onPermissionGranted();
+                } else {
+                    Util.toast("Permission denied");
+                }
+            }
+        }
     }
 }

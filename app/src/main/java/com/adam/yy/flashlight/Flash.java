@@ -85,7 +85,11 @@ public class Flash {
         if (null == isSupport) {
             isSupport = new AtomicBoolean(false);
             if(null == mCamera) {
-                mCamera = Camera.open();
+                try {
+                    mCamera = Camera.open();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             if(null != mCamera){
                 Camera.Parameters parameters = mCamera.getParameters();

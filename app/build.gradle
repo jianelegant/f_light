@@ -5,9 +5,9 @@ android {
     defaultConfig {
         applicationId "com.adam.yy.flashlight"
         minSdkVersion 16
-        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        targetSdkVersion 28
     }
     buildTypes {
         release {
