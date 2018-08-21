@@ -25,6 +25,6 @@ public class MainApp extends Application{
     }
 
     private void initAd() {
-        MobileAds.initialize(this, "ca-app-pub-8228643650463927~5637407437");
+        MobileAds.initialize(this, "ca-app-pub-5644941632262899~2953475714");
     }
 }
