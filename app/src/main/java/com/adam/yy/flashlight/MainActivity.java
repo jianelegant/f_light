@@ -1,5 +1,7 @@
 package com.adam.yy.flashlight;
 
+import android.app.Activity;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,11 +17,16 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 
+import java.lang.ref.WeakReference;
+
 public class MainActivity extends AppCompatActivity implements IMainContract.IView{
+
+    private static final int HANDLER_MSG_CHECK_USE_SCREEN_STATUS = 1;
 
     FloatingActionButton mSwitch;
     SwitchCompat mAutoOn;
     SwitchCompat mUseScreen;
+    Handler mHandler;
 
     MainPresenter mMainPresenter = new MainPresenter(this);
 
@@ -71,20 +78,22 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
 
         mFullWhite = findViewById(R.id.id_full_white);
 
+        mHandler = new Handler(this);
         initUseScreen();
-        initAutoOn();
     }
 
     private void initUseScreen() {
         mUseScreen = findViewById(R.id.id_use_screen);
-        if(!mMainPresenter.canFlash()) {
-            Util.setUseScreen(true);
-        }
-        if(Util.getUseScreen()) {
-            mUseScreen.setChecked(true);
-        } else {
-            mUseScreen.setChecked(false);
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(!mMainPresenter.canFlash()) {
+                    Util.setUseScreen(true);
+                }
+                mHandler.sendEmptyMessage(HANDLER_MSG_CHECK_USE_SCREEN_STATUS);
+
+            }
+        }).start();
 
         mUseScreen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -109,7 +118,12 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
         mAutoOn = findViewById(R.id.id_auto_on);
         if(Util.getAutoOn()) {
             mAutoOn.setChecked(true);
-            blingOn();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    blingOn();
+                }
+            }).start();
         } else {
             mAutoOn.setChecked(false);
         }
@@ -203,8 +217,40 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
         }
     }
 
+    private void checkUseScreenStatus() {
+        if(Util.getUseScreen()) {
+            mUseScreen.setChecked(true);
+        } else {
+            mUseScreen.setChecked(false);
+        }
+        initAutoOn();
+    }
+
     @Override
     public boolean isOn() {
         return mIsOn;
+    }
+
+    static class Handler extends android.os.Handler {
+
+
+        private WeakReference<MainActivity> weakActivity;
+
+        public Handler(MainActivity activity) {
+            weakActivity = new WeakReference<>(activity);
+        }
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case HANDLER_MSG_CHECK_USE_SCREEN_STATUS:
+                    if(null != weakActivity.get()) {
+                        weakActivity.get().checkUseScreenStatus();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
     }
 }
