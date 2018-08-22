@@ -29,6 +29,7 @@ import java.lang.ref.WeakReference;
 public class MainActivity extends AppCompatActivity implements IMainContract.IView{
 
     private static final int HANDLER_MSG_CHECK_USE_FLASH_STATUS = 1;
+    private static final int HANDLER_MSG_INIT_AUTO_ON = 2;
     private static final int REQUEST_CODE = 1988;
 
     FloatingActionButton mSwitch;
@@ -89,11 +90,26 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
         mFullWhite = findViewById(R.id.id_full_white);
 
         mHandler = new Handler(this);
+        initUseFlashBySP();
         initUseFlash();
     }
 
-    private void initUseFlash() {
+    private void initUseFlashBySP() {
         mUseFlash = findViewById(R.id.id_use_flash);
+        mAutoOn = findViewById(R.id.id_auto_on);
+        checkUseFlashStatus();
+        initAutoOnBySp();
+    }
+
+    private void initAutoOnBySp() {
+        if(Util.getAutoOn()) {
+            mAutoOn.setChecked(true);
+        } else {
+            mAutoOn.setChecked(false);
+        }
+    }
+
+    private void initUseFlash() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -101,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
                     Util.setUseFlash(false);
                 }
                 mHandler.sendEmptyMessage(HANDLER_MSG_CHECK_USE_FLASH_STATUS);
+                mHandler.sendEmptyMessage(HANDLER_MSG_INIT_AUTO_ON);
 
             }
         }).start();
@@ -150,7 +167,6 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
     }
 
     private void initAutoOn() {
-        mAutoOn = findViewById(R.id.id_auto_on);
         if(Util.getAutoOn()) {
             mAutoOn.setChecked(true);
             new Thread(new Runnable() {
@@ -272,7 +288,6 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
         } else {
             mUseFlash.setChecked(false);
         }
-        initAutoOn();
     }
 
     @Override
@@ -294,6 +309,11 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
                 case HANDLER_MSG_CHECK_USE_FLASH_STATUS:
                     if(null != weakActivity.get()) {
                         weakActivity.get().checkUseFlashStatus();
+                    }
+                    break;
+                case HANDLER_MSG_INIT_AUTO_ON:
+                    if(null != weakActivity.get()) {
+                        weakActivity.get().initAutoOn();
                     }
                     break;
                 default:
