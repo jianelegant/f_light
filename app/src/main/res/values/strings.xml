@@ -8,4 +8,7 @@
     <string name="slow">Slow</string>
     <string name="fast">Fast</string>
     <string name="use_camera_flash">Use camera flash</string>
+    <string name="deny_msg">Please grant Camera permission so that you can use camera flash; You can change setting in permission item of app info page.</string>
+    <string name="cancel">Cancel</string>
+    <string name="go_app_info">Go App info</string>
 </resources>

@@ -1,11 +1,16 @@
 package com.adam.yy.flashlight;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.SwitchCompat;
@@ -41,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
 
     private InterstitialAd mInterstitialAd;
     int failRetryTimes = 0;
+
+    private AlertDialog mPermiDenyDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -305,8 +312,32 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
                     onPermissionGranted();
                 } else {
                     Util.toast("Permission denied");
+                    showDenyDialog();
                 }
             }
         }
+    }
+
+    private void showDenyDialog() {
+        if(null == mPermiDenyDialog) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                    .setMessage(R.string.deny_msg)
+                    .setNegativeButton(R.string.cancel, null)
+                    .setPositiveButton(R.string.go_app_info, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            goAppinfoPage();
+                        }
+                    });
+            mPermiDenyDialog = builder.create();
+        }
+        mPermiDenyDialog.show();
+    }
+
+    private void goAppinfoPage() {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.fromParts("package", getPackageName(), null));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 }
