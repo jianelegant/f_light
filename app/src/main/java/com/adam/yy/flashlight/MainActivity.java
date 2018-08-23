@@ -188,12 +188,22 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
 
     private void blingOn() {
         mMainPresenter.blingOnOff(true);
-        mSwitch.setImageResource(R.drawable.light_on);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mSwitch.setImageResource(R.drawable.light_on);
+            }
+        });
     }
 
     private void blingOff() {
         mMainPresenter.blingOnOff(false);
-        mSwitch.setImageResource(R.drawable.light_off);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mSwitch.setImageResource(R.drawable.light_off);
+            }
+        });
     }
 
     private void setLevel(int level) {
@@ -272,22 +282,32 @@ public class MainActivity extends AppCompatActivity implements IMainContract.IVi
     @Override
     @MainThread
     public void onStopBling() {
-        mIsOn = false;
-        mFullWhite.setVisibility(View.GONE);
-        if(!Util.getUseFlash()) {
-            WindowManager.LayoutParams layout = getWindow().getAttributes();
-            layout.screenBrightness = mOldBrightness;
-            getWindow().setAttributes(layout);
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mIsOn = false;
+                mFullWhite.setVisibility(View.GONE);
+                if (!Util.getUseFlash()) {
+                    WindowManager.LayoutParams layout = getWindow().getAttributes();
+                    layout.screenBrightness = mOldBrightness;
+                    getWindow().setAttributes(layout);
+                }
+            }
+        });
     }
 
     @MainThread
     private void checkUseFlashStatus() {
-        if(Util.getUseFlash()) {
-            mUseFlash.setChecked(true);
-        } else {
-            mUseFlash.setChecked(false);
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (Util.getUseFlash()) {
+                    mUseFlash.setChecked(true);
+                } else {
+                    mUseFlash.setChecked(false);
+                }
+            }
+        });
     }
 
     @Override
