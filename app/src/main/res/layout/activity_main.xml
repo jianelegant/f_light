@@ -34,6 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_margin="9dp"
+                android:textColor="@android:color/black"
                 android:typeface="monospace"
                 android:gravity="center"
                 android:text="@string/auto_on_tips" />
@@ -69,6 +70,7 @@
                 android:layout_centerVertical="true"
                 android:layout_margin="9dp"
                 android:typeface="monospace"
+                android:textColor="@android:color/black"
                 android:gravity="center"
                 android:text="@string/use_camera_flash" />
 
@@ -100,6 +102,7 @@
                 android:layout_marginRight="30dp"
                 android:max="9"
                 android:thumb="@drawable/thumb"
+                android:progressBackgroundTint="@android:color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
